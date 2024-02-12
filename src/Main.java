@@ -1,7 +1,6 @@
-import weka.core.Attribute;
-import weka.core.AttributeStats;
-import weka.core.Instances;
 import weka.core.converters.ConverterUtils.DataSource;
+import weka.core.Instances;
+import weka.core.Attribute;
 import java.io.*;
 
 public class Main {
@@ -9,35 +8,27 @@ public class Main {
     public static void main(String[] args) {
         try {
             // Datuak hartu
-            String inPath = "C:/Users/radio/Desktop/System/Uni/3/Erabakiak/1. Praktika Datuak-20240122/heart-c.arff";
-            DataSource source = new DataSource(inPath);
+            DataSource source = new DataSource(args[0]);
             Instances data = source.getDataSet();
             // Emaitzak gorde
-            String outPath = "C:/Users/radio/Desktop/emaitzak.txt";
-            FileWriter fileWriter = new FileWriter(outPath);
+            FileWriter fileWriter = new FileWriter(args[1]);
 
             // Klasea adierazi
             data.setClassIndex(data.numAttributes()-1);
             int classIndex = data.classIndex();
-
-            // 1-Aztertzen ari garen fitxategiko path-a
-            fileWriter.write("1- Aztertzen ari garen fitxategiko path-a: " + inPath + "\n");
-
-            // 2-Instantzia kopurua
-            fileWriter.write("2- Instantzia kopurua: " + data.numInstances() + "\n");
-
-            // 3-Atributu kopurua
-            fileWriter.write("3- Atributu kopurua: " + data.numAttributes() + "\n");
-
-            // 4-Lehenengo atributuak har ditzakeen balio ezberdinak (balio ezberdin kopurua)
-            fileWriter.write("4- Lehenengo atributuak har ditzakeen balio ezberdinak (v2):" + data.attributeStats(0).distinctCount);
-            fileWriter.write("4- Lehenengo atributuak har ditzakeen balio ezberdinak:" + data.numDistinctValues(0));
-
-            // 5-Azken atributuak hartzen dituen balioak eta beraien maiztasuna
             Attribute classAttribute = data.attribute(classIndex);
+
+            // ----------------------------------- [1,2,3,4,7] ----------------------------------
+            fileWriter.write("1- Aztertzen ari garen fitxategiko path-a: " + args[0] + "\n");
+            fileWriter.write("2- Instantzia kopurua: " + data.numInstances() + "\n");
+            fileWriter.write("3- Atributu kopurua: " + data.numAttributes() + "\n");
+            fileWriter.write("4- Lehenengo atributuak har ditzakeen balio ezberdinak:" + data.numDistinctValues(0));
+            fileWriter.write("7- Azken aurreko atributuak dituen missing value kopurua: " + data.attributeStats(data.numAttributes()-2).missingCount + "\n");
+
+            // ------------------------------------ [5,6] --------------------------------------
+            fileWriter.write("\n" + "5- Azken atributuak hartzen dituen balioak eta beraien maiztasuna:");
             int minFrequency = Integer.MAX_VALUE;
             int minIndex = -1;
-            fileWriter.write("\n" + "5- Azken atributuak hartzen dituen balioak eta beraien maiztasuna:");
             for (int i = 0; i < data.numInstances(); i++) {
                 //"i" instantziak errekorritu
                 String value = classAttribute.value(i);
@@ -49,12 +40,7 @@ public class Main {
                     minIndex = i;
                 }
             }
-
-            // 6-Maiztasun txikien duen klasearen identifikatzailea eman
             fileWriter.write("\n" + "6- Maiztasun txikien duen klasearen identifikatzailea: " + classAttribute.value(minIndex));
-
-            // 7-Azken aurreko atributuak dituen missing value kopurua
-            fileWriter.write("\n" + "7- Azken aurreko atributuak dituen missing value kopurua: " + data.attributeStats(data.numAttributes()-2).missingCount);
 
             // fileWriter itxi
             fileWriter.flush();
