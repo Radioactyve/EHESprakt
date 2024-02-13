@@ -7,14 +7,16 @@ public class Main {
 
     public static void main(String[] args) {
         try {
+            // ---------------------------FITXATEGIAK------------------------------
             // Datuak hartu
             DataSource source = new DataSource(args[0]);
             Instances data = source.getDataSet();
+            data.setClassIndex(data.numAttributes()-1);
+
             // Emaitzak gorde
             FileWriter fileWriter = new FileWriter(args[1]);
 
             // Klasea adierazi
-            data.setClassIndex(data.numAttributes()-1);
             int classIndex = data.classIndex();
             Attribute classAttribute = data.attribute(classIndex);
 
